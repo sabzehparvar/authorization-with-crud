@@ -23,10 +23,18 @@ import {
 import { headers } from "next/dist/client/components/headers";
 import { useSelector } from "react-redux";
 import { stringify } from "postcss";
+import AddUserModal from "./AddUserModal";
 
 const TABLE_HEAD = ["Member", "Id", "Status", "Employed", ""];
+const USERS_LIST_URL = "/api/users?page=";
+const ADD_USER_URL = "api/users";
+
+
 
 export default function Users() {
+
+  const token = useSelector((state) => state?.user?.auth?.token);
+
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState(null);
   const [page, setPage] = useState(1);
@@ -37,10 +45,17 @@ export default function Users() {
     email: "mojtaba@gmail.com",
     avatar: "https://reqres.in/img/faces/1-image.jpg",
   });
+  const [showModal, setShowModal] = useState(false);
 
-  const USERS_LIST_URL = "/api/users?page=";
-  const token = useSelector((state) => state?.user?.auth?.token);
+  function handleModalOpen() {
+    setShowModal(true);
+  }
 
+  function handleModalClose() {
+    setShowModal(false);
+  }
+
+  // fetching users data from server
   const fetchData = async () => {
     try {
       const response = await axios.get(USERS_LIST_URL + page, {
@@ -55,16 +70,17 @@ export default function Users() {
 
   useEffect(() => {
     fetchData().then((response) => {
-      console.log(response);
+
       setUsers(response?.data);
       setTotalPages(response?.total_pages);
       setLoading(false);
     });
   }, [page]);
 
+  // adding new users 
   const addUser = async () => {
     try {
-      const response = await axios.post(`https://reqres.in/api/users`, newUser);
+      const response = await axios.post(ADD_USER_URL, newUser);
       const data = await response?.data?.data;
 
       console.log(response);
@@ -93,7 +109,8 @@ export default function Users() {
   };
 
   console.log(totalPages);
-  return (
+  return (<>
+    
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="mb-2 flex items-center justify-between gap-8">
@@ -101,9 +118,6 @@ export default function Users() {
             <Typography variant="h5" color="blue-gray">
               Members list
             </Typography>
-            {/* <Typography color="gray" className="mt-1 font-normal">
-              See information about all members
-            </Typography> */}
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
             <Button variant="outlined" size="sm">
@@ -111,7 +125,7 @@ export default function Users() {
             </Button>
             <Button
               id="add"
-              onClick={() => addUser()}
+              onClick={handleModalOpen}
               className="flex items-center gap-3"
               size="sm"
             >
@@ -119,23 +133,6 @@ export default function Users() {
             </Button>
           </div>
         </div>
-        {/* <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <Tabs value="all" className="w-full md:w-max">
-            <TabsHeader>
-              {TABS.map(({ label, value }) => (
-                <Tab key={value} value={value}>
-                  &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                </Tab>
-              ))}
-            </TabsHeader>
-          </Tabs>
-          <div className="w-full md:w-72">
-            <Input
-              label="Search"
-              icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-            />
-          </div>
-        </div> */}
       </CardHeader>
       <CardBody className="overflow-scroll px-0">
         <table className="mt-4 w-full min-w-max table-auto text-left">
@@ -158,7 +155,11 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            {users?.map(
+            { loading ? (<div>
+            <Typography className=" text-center p-20" variant="h5" color="blue-gray">
+              Loading...
+            </Typography>
+          </div>) : (users?.map(
               (
                 {
                   avatar,
@@ -249,7 +250,7 @@ export default function Users() {
                   </tr>
                 );
               }
-            )}
+            ))}
           </tbody>
         </table>
       </CardBody>
@@ -277,5 +278,8 @@ export default function Users() {
         </div>
       </CardFooter>
     </Card>
+    <AddUserModal showModal={showModal}
+    handleModalClose ={handleModalClose} />
+    </>
   );
 }
