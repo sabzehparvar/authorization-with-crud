@@ -58,22 +58,22 @@ export default function LoginForm() {
 
   return (
     <section className=" max-w-md mx-auto rounded-xl md:max-w-2xl">
-      <div className="relative flex flex-col items-center mt-32 justify-center  overflow-hidden">
+      <div className="relative flex flex-col items-center mt-32 justify-center  ">
         {loggedIn ? (
-          <div>
-            <h3 className=" font-bold p-16">you are logged in</h3>
+          <div className="w-full p-6 bg-white rounded-md shadow-2xl lg:max-w-xl"> 
+            <h3 className="text-3xl font-bold text-center text-gray-700 mb-20 mt-10">You Are Logged In</h3>
             <button
               onClick={logOut}
               type="button"
-              className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+              className=" w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
             >
               Log out
             </button>
           </div>
         ) : (
-          <div className="w-full p-6 bg-white rounded-md shadow-md lg:max-w-xl">
+          <div className="w-full p-6 bg-white rounded-md shadow-2xl lg:max-w-xl">
             <h1 className="text-3xl font-bold text-center text-gray-700">
-              Hi please login
+              Hi, Please Login
             </h1>
             <form onSubmit={handleSubmit} className="mt-6">
               <div className="mb-4">
