@@ -5,9 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGIN, LOGOUT } from "@/redux/features/authSlice";
 import axios from "@/api/axios";
-
-
-
+import { store } from "@/redux/store";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("eve.holt@reqres.in");
@@ -26,19 +24,15 @@ export default function LoginForm() {
       const response = await axios.post(LOGIN_URL, {
         email,
         password,
-        
       });
-
       const { token } = response.data;
-      // dispatch({ type: "LOGIN", payload: { token, email } });
-      dispatch(LOGIN({token, email}))
-      
-      setTimeout(()=>{
+      dispatch(LOGIN({ token, email }));
+      setTimeout(() => {
         router.push("/dashboard");
-      }, 3000)
-      
-      setLoggedIn(true);
-      console.log(token);
+      }, 3000);
+      if (token && response.statusCode === 200) {
+        setLoggedIn(true);
+      }
     } catch (err) {
       alert("Error: " + err.message);
     }
@@ -46,13 +40,11 @@ export default function LoginForm() {
 
   const userToken = useSelector((state) => state?.user?.auth?.token);
   useMemo(() => {
-    console.log(userToken);
     userToken ? setLoggedIn(true) : setLoggedIn(false);
   }, []);
 
   const logOut = () => {
-    // dispatch({ type: "LOGOUT" });
-    dispatch(LOGOUT())
+    dispatch(LOGOUT());
 
     setLoggedIn(false);
   };
@@ -61,8 +53,10 @@ export default function LoginForm() {
     <section className=" max-w-md mx-auto rounded-xl md:max-w-2xl">
       <div className="relative flex flex-col items-center mt-32 justify-center  ">
         {loggedIn ? (
-          <div className="w-full p-6 bg-white rounded-md shadow-2xl lg:max-w-xl"> 
-            <h3 className="text-3xl font-bold text-center text-gray-700 mb-20 mt-10">You Are Logged In</h3>
+          <div className="w-full p-6 bg-white rounded-md shadow-2xl lg:max-w-xl">
+            <h3 className="text-3xl font-bold text-center text-gray-700 mb-20 mt-10">
+              You Are Logged In
+            </h3>
             <button
               onClick={logOut}
               type="button"
@@ -85,7 +79,7 @@ export default function LoginForm() {
                   Email
                 </label>
                 <input
-                  required={true}  
+                  required={true}
                   value={email}
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
