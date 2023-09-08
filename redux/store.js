@@ -5,38 +5,6 @@ import authSlice from './features/authSlice';
 import hardSet from 'redux-persist/es/stateReconciler/hardSet';
 
 
-// // Define initial state
-// const initialState = {
-//   auth: {
-//     token: null,
-//   },
-//   email: null,
-
-// };
-
-// // Define reducer
-// const rootReducer = (state = initialState, action) => {
-//   switch (action.type) {
-//     case 'LOGIN':
-//       return {
-//         ...state,
-//         auth: {
-//           token: action.payload.token,
-//         },
-//         email: action.payload.email
-//       };
-//     case 'LOGOUT':
-//       return {
-//         ...state,
-//         auth: {
-//           token: null,
-//         },
-//         email: null,
-//       };
-//     default:
-//       return state;
-//   }
-// };
 
 // Configure Redux Persist
 const persistConfig = {
