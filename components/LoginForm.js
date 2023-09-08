@@ -26,6 +26,7 @@ export default function LoginForm() {
       const response = await axios.post(LOGIN_URL, {
         email,
         password,
+        
       });
 
       const { token } = response.data;
@@ -84,6 +85,7 @@ export default function LoginForm() {
                   Email
                 </label>
                 <input
+                  required={true}  
                   value={email}
                   type="email"
                   onChange={(e) => setEmail(e.target.value)}
@@ -98,6 +100,7 @@ export default function LoginForm() {
                   Password
                 </label>
                 <input
+                  required={true}
                   value={password}
                   type="password"
                   onChange={(e) => setPassword(e.target.value)}
