@@ -21,9 +21,8 @@ const usersPersistConfig = {
   stateReconciler: hardSet,
 };
 
-// const persistedReducer = persistReducer(authPersistConfig, authSlice);
 
-
+// combine reducers
 const rootReducer = combineReducers({
   authPersistReducer: persistReducer(authPersistConfig, authSlice),
   usersPersistReducer: persistReducer(usersPersistConfig, usersSlice),

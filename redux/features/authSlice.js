@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 
 
-// Define initial state
+//  initial state
 const initialState = {
     user:{
         auth: {
@@ -33,6 +33,5 @@ export const authSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { LOGIN, LOGOUT } = authSlice.actions
 
-console.log(LOGIN());
 
 export default authSlice.reducer

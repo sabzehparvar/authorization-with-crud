@@ -1,7 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import { Providers } from "@/redux/provider";
-import { useSelector } from "react-redux";
 
 const inter = Inter({ subsets: ["latin"] });
 

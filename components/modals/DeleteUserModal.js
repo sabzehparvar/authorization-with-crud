@@ -3,7 +3,6 @@ import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 export default function DeleteUserModal({showDeletModal,handleDeleteModalClose}) {
-  // const [open, setOpen] = useState(true)
 
   const cancelButtonRef = useRef(null)
   const onCancel = () => {

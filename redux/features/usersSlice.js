@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 
 
-// Define initial state
+//  initial state
 const initialState = {
     users:[]
  
@@ -25,6 +25,5 @@ export const usersSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { Add } = usersSlice.actions
 
-console.log(Add());
 
 export default usersSlice.reducer

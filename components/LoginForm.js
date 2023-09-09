@@ -1,22 +1,25 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGIN, LOGOUT } from "@/redux/features/authSlice";
 import axios from "@/api/axios";
-import { store } from "@/redux/store";
 
 export default function LoginForm() {
+
+  //states for default value
   const [email, setEmail] = useState("eve.holt@reqres.in");
   const [password, setPassword] = useState("cityslicka");
   const [loggedIn, setLoggedIn] = useState(false);
+
 
   const dispatch = useDispatch();
   const router = useRouter();
 
   const LOGIN_URL = "/api/login";
 
+  // handle login validation
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,8 +30,6 @@ export default function LoginForm() {
       });
       const { token } = response?.data;
       dispatch(LOGIN({ token, email }));
-      console.log(dispatch(LOGIN({ token, email })));
-      console.log(response.status);
 
       setTimeout(() => {
         router.push("/dashboard");
@@ -36,22 +37,22 @@ export default function LoginForm() {
 
       if (token && response.status === 200) {
         setLoggedIn(true);
-        console.log('yay');
       }
     } catch (err) {
       alert("Error: " + err.message);
     }
   };
 
+  // access token from redux
   const userToken = useSelector(state => state?.authPersistReducer?.user?.auth?.token)
-  console.log(userToken);
+
   useMemo(() => {
     userToken ? setLoggedIn(true) : setLoggedIn(false);
   }, []);
 
+  // handle logout
   const logOut = () => {
     dispatch(LOGOUT());
-
     setLoggedIn(false);
   };
 
