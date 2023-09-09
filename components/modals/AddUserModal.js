@@ -1,14 +1,14 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-// import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
-// import { Tooltip, avatar } from "@material-tailwind/react";
 import axios from "@/api/axios";
 import { Add } from "@/redux/features/usersSlice";
 
+// regex
 const ADD_USER_URL = "api/users";
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
 
 export default function AddUserModal({
   handleModalClose,
@@ -17,31 +17,36 @@ export default function AddUserModal({
 }) {
   
   const dispatch = useDispatch();
+
+  // states
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(false);
   const [password, setPassword] = useState("");
   const [validPwd, setValidPwd] = useState(false);
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
+
+  // accessing token 
   const token = useSelector((state) => state?.authPersistReducer?.user?.auth?.token);
 
 
-
+// validate password
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(password));
   }, [password]);
 
+  //validate email
   useEffect(() => {
     setValidEmail(emailRegex.test(email));
   }, [email]);
 
+  // clear input 
   const clearInput = () => {
     setEmail("");
     setPassword("");
     setFirst_name("");
     setLast_name("");
   };
-  // const usersList = useSelector((state) => state);
 
 
   const onCancel = () => {
@@ -55,6 +60,8 @@ export default function AddUserModal({
 
   const cancelButtonRef = useRef(null);
 
+
+  // add new user 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -68,12 +75,10 @@ export default function AddUserModal({
         headers: { 'Authorization': `${token}` }
       });
 
-      console.log(response);
       if (response.status === 201 && response) {
         dispatch(Add(response?.data));
         onConfirm();
         clearInput();
-        console.log("done");
       }
     } catch (error) {
       console.log(error);
