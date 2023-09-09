@@ -25,20 +25,26 @@ export default function LoginForm() {
         email,
         password,
       });
-      const { token } = response.data;
+      const { token } = response?.data;
       dispatch(LOGIN({ token, email }));
+      console.log(dispatch(LOGIN({ token, email })));
+      console.log(response.status);
+
       setTimeout(() => {
         router.push("/dashboard");
       }, 3000);
-      if (token && response.statusCode === 200) {
+
+      if (token && response.status === 200) {
         setLoggedIn(true);
+        console.log('yay');
       }
     } catch (err) {
       alert("Error: " + err.message);
     }
   };
 
-  const userToken = useSelector((state) => state?.user?.auth?.token);
+  const userToken = useSelector(state => state?.authPersistReducer?.user?.auth?.token)
+  console.log(userToken);
   useMemo(() => {
     userToken ? setLoggedIn(true) : setLoggedIn(false);
   }, []);
