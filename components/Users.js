@@ -188,7 +188,7 @@ console.log(uniqueState);
                   <tr key={id}>
                     <td className={classes}>
                       <div className="flex items-center gap-3">
-                        <Avatar src={avatar} alt={name} size="sm" />
+                        <Avatar src={avatar? avatar: 'https://www.pngkey.com/png/detail/114-1149847_avatar-unknown-dp.png'} alt={name} size="sm" />
                         <div className="flex flex-col">
                           <Typography
                             variant="small"
