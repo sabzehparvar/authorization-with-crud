@@ -1,43 +1,50 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+// import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
-import { Tooltip, avatar } from "@material-tailwind/react";
+// import { Tooltip, avatar } from "@material-tailwind/react";
 import axios from "@/api/axios";
 import { Add } from "@/redux/features/usersSlice";
 
 const ADD_USER_URL = "api/users";
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-
+const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
 export default function AddUserModal({
   handleModalClose,
   showModal,
   handleModalConfirm,
 }) {
+  
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(false);
   const [password, setPassword] = useState("");
   const [validPwd, setValidPwd] = useState(false);
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
-  // const [newUser, setNewUser] = useState();
+
 
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(password));
   }, [password]);
 
+  useEffect(() => {
+    setValidEmail(emailRegex.test(email));
+  }, [email]);
+
   const clearInput = () => {
     setEmail("");
-    setValidPwd("");
+    setPassword("");
     setFirst_name("");
     setLast_name("");
   };
-  const usersList = useSelector((state) => state);
+  // const usersList = useSelector((state) => state);
 
-  // const [open, setOpen] = useState(false)
+
   const onCancel = () => {
     handleModalClose();
+    clearInput()
   };
 
   const onConfirm = () => {
@@ -53,7 +60,7 @@ export default function AddUserModal({
       const response = await axios.post(ADD_USER_URL, {
         first_name,
         last_name,
-        email,
+        validEmail,
         validPwd,
       });
 
@@ -68,37 +75,8 @@ export default function AddUserModal({
       console.log(error);
     }
 
-    // useEffect(() => {
-    //   addUser().then((response) => {
-    //     console.log(response);
-    //     response ? setUsers(...users, data) : "";
-    //   });
-    // }, []);
-
-    // try {
-    //   const response = await axios.post(LOGIN_URL, {
-    //     email,
-    //     password,
-    //   });
-    //   const { token } = response.data;
-    //   dispatch(LOGIN({ token, email }));
-    //   setTimeout(() => {
-    //     router.push("/dashboard");
-    //   }, 3000);
-    //   if (token && response.statusCode === 200) {
-    //     setLoggedIn(true);
-    //   }
-    // } catch (err) {
-    //   alert("Error: " + err.message);
-    // }
   };
 
-  // console.log(useSelector(state => state))
-
-  // adding new users
-  // const addUser = async () => {
-
-  // };
 
   return (
     <Transition.Root show={showModal} as={Fragment}>
@@ -134,9 +112,7 @@ export default function AddUserModal({
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                    {/* <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                      <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
-                    </div> */}
+                  
                     <div className=" w-full mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title
                         as="h3"
@@ -183,7 +159,12 @@ export default function AddUserModal({
                               htmlFor="email"
                               className="block text-sm font-semibold text-gray-800"
                             >
-                              Email
+                              <span>Email</span>
+                              <span>
+                                {validEmail
+                                  ? ""
+                                  : " (please enter a valid email)"}
+                              </span>
                             </label>
                             <input
                               id="email"
@@ -207,9 +188,7 @@ export default function AddUserModal({
                                   : "( please enter a valid password. 8 to 24 characters. Must include uppercase and lowercase letters, a number and a special character.)"}
                               </p>
                             </label>
-                            {/* <Tooltip> 8 to 24 characters.<br />
-                            Must include uppercase and lowercase letters, a number and a special character.<br />
-                            Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span></Tooltip> */}
+                            
                             <input
                               id="password"
                               required={true}
@@ -221,7 +200,7 @@ export default function AddUserModal({
                           </div>
                           <div className=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                             <button
-                              disabled={validPwd ? false : true}
+                              disabled={!validPwd || !validEmail ? true : false}
                               type="submit"
                               className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto disabled:bg-gray-600"
                             >
