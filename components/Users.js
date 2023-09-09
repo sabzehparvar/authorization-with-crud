@@ -163,11 +163,13 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            { loading ? (<div>
-            <Typography className=" text-center p-20" variant="h5" color="blue-gray">
+            { loading ? (
+              
+            <tr>
+            <td className=" text-center p-20" >
               Loading...
-            </Typography>
-          </div>) : (users?.map(
+            </td>
+          </tr>) : (users?.map(
               (
                 {
                   avatar,
