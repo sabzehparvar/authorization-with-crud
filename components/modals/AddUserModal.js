@@ -86,7 +86,7 @@ export default function AddUserModal({ handleModalClose, showModal, handleModalC
     // }
   };
 
-  console.log(useSelector(state => state))
+  // console.log(useSelector(state => state))
 
   // adding new users
   // const addUser = async () => {

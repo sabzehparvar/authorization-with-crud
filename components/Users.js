@@ -58,13 +58,12 @@ export default function Users() {
     setShowDeletModal(false);
   }
 
-  const newUsers = useSelector((state) => state?.usersPersistReducer.users);
-  console.log(newUsers);
-  function handleModalConfirm() {
-    setShowModal(false);
-    setUsers([...users, ...newUsers]);
-    console.log(users);
-  }
+ 
+
+  // useEffect(()=>{
+  //   setUsers([...users, ...newUsers]);
+  // }, [newUsers]);
+
 
   // fetching users data from server
   const fetchData = async () => {
@@ -94,10 +93,7 @@ export default function Users() {
 
   
 
-  // useEffect(()=>{
-  //   setUsers([...users, ...newUsers]);
-  // }, [newUsers]);
-
+  
 
   const nextPage = () => {
     if (page < totalPages) {
@@ -112,6 +108,20 @@ export default function Users() {
   };
 
   console.log(totalPages);
+
+
+  const newUsers = useSelector((state) => state?.usersPersistReducer.users);
+  console.log(newUsers);
+  function handleModalConfirm() {
+    setShowModal(false);
+    console.log(users);
+  }
+
+  useEffect(()=> {
+    setUsers([...users, ...newUsers]);
+  },[newUsers])
+
+
   return (<>
     
     <Card className="h-full w-full">
