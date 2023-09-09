@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LOGIN, LOGOUT } from "@/redux/features/authSlice";
+import { Remove } from "@/redux/features/usersSlice";
 import axios from "@/api/axios";
 
 export default function LoginForm() {
@@ -53,6 +54,7 @@ export default function LoginForm() {
   // handle logout
   const logOut = () => {
     dispatch(LOGOUT());
+    dispatch(Remove())
     setLoggedIn(false);
   };
 
