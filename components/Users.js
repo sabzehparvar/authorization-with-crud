@@ -2,46 +2,41 @@
 
 import { useEffect, useState } from "react";
 import axios from "@/api/axios";
-// import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
-  // Input,
   Typography,
   Button,
   CardBody,
   Chip,
   CardFooter,
-  // Tabs,
-  // TabsHeader,
-  // Tab,
   Avatar,
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
-// import { headers } from "next/dist/client/components/headers";
 import { useSelector } from "react-redux";
-// import { stringify } from "postcss";
 import AddUserModal from "./modals/AddUserModal";
-// import { store } from "@/redux/store";
 import DeleteUserModal from "./modals/DeleteUserModal";
 
 
-const TABLE_HEAD = ["Member", "Id", "Status", "Employed", ""];
+const TABLE_HEAD = ["Name", "Id", "Status", "Email", "Edit"];
 const USERS_LIST_URL = "/api/users?page=";
 
 
 export default function Users() {
-
-  const token = useSelector((state) => state?.user?.auth?.token);
   
+  // states
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showDeletModal, setShowDeletModal] = useState(false);
+
+
+  // accessing token 
+  const token = useSelector((state) => state?.user?.auth?.token);
 
 
   // modal handlers 
@@ -66,7 +61,6 @@ export default function Users() {
       const response = await axios.get(USERS_LIST_URL + page, {
         headers: { Authorization: `${token}` },
       });
-      console.log(response);
 
       const data = await response?.data;
       return data;
@@ -78,9 +72,8 @@ export default function Users() {
   useEffect(() => {
     fetchData().then((response) => {
       const membersList = response?.data
-      
       setUsers(membersList);
-      console.log(users);
+
       setTotalPages(response?.total_pages);
       setLoading(false);
     });
@@ -89,7 +82,7 @@ export default function Users() {
   
 
   
-
+// pagination buttons
   const nextPage = () => {
     if (page < totalPages) {
       setPage(page + 1);
@@ -102,21 +95,22 @@ export default function Users() {
     }
   };
 
-  console.log(totalPages);
 
-
+  // add new user to the list
   const newUsers = useSelector((state) => state?.usersPersistReducer.users);
-  console.log(newUsers);
+ 
   function handleModalConfirm() {
     setShowModal(false);
-    console.log(users);
+    
   }
 
   useEffect(()=> {
+
     setUsers([...users, ...newUsers]);
   },[newUsers])
 
-
+  const uniqueState = [...new Set(users.map(item => item))];
+console.log(uniqueState);
   return (<>
     
     <Card className="h-full w-full">
@@ -169,7 +163,7 @@ export default function Users() {
             <td className=" text-center p-20" >
               Loading...
             </td>
-          </tr>) : (users?.map(
+          </tr>) : (uniqueState?.map(
               (
                 {
                   avatar,
