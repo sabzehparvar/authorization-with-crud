@@ -24,27 +24,22 @@ import { headers } from "next/dist/client/components/headers";
 import { useSelector } from "react-redux";
 import { stringify } from "postcss";
 import AddUserModal from "./AddUserModal";
+import { store } from "@/redux/store";
+
 
 const TABLE_HEAD = ["Member", "Id", "Status", "Employed", ""];
 const USERS_LIST_URL = "/api/users?page=";
-const ADD_USER_URL = "api/users";
-
 
 
 export default function Users() {
 
   const token = useSelector((state) => state?.user?.auth?.token);
-
+  
   const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState([]);
+  console.log(users);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [newUser, setNewUser] = useState({
-    first_name: "mojtaba",
-    last_name: "sav",
-    email: "mojtaba@gmail.com",
-    avatar: "https://reqres.in/img/faces/1-image.jpg",
-  });
   const [showModal, setShowModal] = useState(false);
 
   function handleModalOpen() {
@@ -55,12 +50,22 @@ export default function Users() {
     setShowModal(false);
   }
 
+  const newUsers = useSelector((state) => state?.usersPersistReducer.users);
+  console.log(newUsers);
+  function handleModalConfirm() {
+    setShowModal(false);
+    setUsers([...users, ...newUsers]);
+    console.log(users);
+  }
+
   // fetching users data from server
   const fetchData = async () => {
     try {
       const response = await axios.get(USERS_LIST_URL + page, {
         headers: { Authorization: `${token}` },
       });
+      console.log(...response.data.data);
+
       const data = await response?.data;
       return data;
     } catch (error) {
@@ -70,31 +75,21 @@ export default function Users() {
 
   useEffect(() => {
     fetchData().then((response) => {
-
-      setUsers(response?.data);
+      const membersList = response?.data
+      
+      setUsers(membersList);
+      console.log(users);
       setTotalPages(response?.total_pages);
       setLoading(false);
     });
   }, [page]);
 
-  // adding new users 
-  const addUser = async () => {
-    try {
-      const response = await axios.post(ADD_USER_URL, newUser);
-      const data = await response?.data?.data;
+  
 
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // useEffect(()=>{
+  //   setUsers([...users, ...newUsers]);
+  // }, [newUsers]);
 
-  useEffect(() => {
-    addUser().then((response) => {
-      console.log(response);
-      response ? setUsers(...users, data) : "";
-    });
-  }, []);
 
   const nextPage = () => {
     if (page < totalPages) {
@@ -279,7 +274,8 @@ export default function Users() {
       </CardFooter>
     </Card>
     <AddUserModal showModal={showModal}
-    handleModalClose ={handleModalClose} />
+    handleModalClose ={handleModalClose}
+    handleModalConfirm = {handleModalConfirm} />
     </>
   );
 }

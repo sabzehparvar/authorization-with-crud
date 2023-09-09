@@ -8,7 +8,7 @@ import { Add } from "@/redux/features/usersSlice";
 
 const ADD_USER_URL = "api/users";
 
-export default function AddUserModal({ handleModalClose, showModal }) {
+export default function AddUserModal({ handleModalClose, showModal, handleModalConfirm }) {
   const dispatch = useDispatch()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +28,11 @@ export default function AddUserModal({ handleModalClose, showModal }) {
   const onCancel = () => {
     handleModalClose();
   };
+
+  const onConfirm = () => {
+    handleModalConfirm()
+  }
+
   const cancelButtonRef = useRef(null);
 
   const handleSubmit = async (e) => {
@@ -44,7 +49,7 @@ export default function AddUserModal({ handleModalClose, showModal }) {
       console.log(response);
       if(response.status === 201 && response){
         dispatch(Add(response?.data))
-        onCancel()
+        onConfirm()
         clearInput()
         console.log('done');
       }
