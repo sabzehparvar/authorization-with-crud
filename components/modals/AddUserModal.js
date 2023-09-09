@@ -23,6 +23,8 @@ export default function AddUserModal({
   const [validPwd, setValidPwd] = useState(false);
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
+  const token = useSelector((state) => state?.authPersistReducer?.user?.auth?.token);
+
 
 
   useEffect(() => {
@@ -60,8 +62,10 @@ export default function AddUserModal({
       const response = await axios.post(ADD_USER_URL, {
         first_name,
         last_name,
-        validEmail,
-        validPwd,
+        email,
+        password,
+      },{
+        headers: { 'Authorization': `${token}` }
       });
 
       console.log(response);

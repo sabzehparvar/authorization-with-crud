@@ -2,29 +2,29 @@
 
 import { useEffect, useState } from "react";
 import axios from "@/api/axios";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+// import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
-  Input,
+  // Input,
   Typography,
   Button,
   CardBody,
   Chip,
   CardFooter,
-  Tabs,
-  TabsHeader,
-  Tab,
+  // Tabs,
+  // TabsHeader,
+  // Tab,
   Avatar,
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
-import { headers } from "next/dist/client/components/headers";
+// import { headers } from "next/dist/client/components/headers";
 import { useSelector } from "react-redux";
-import { stringify } from "postcss";
+// import { stringify } from "postcss";
 import AddUserModal from "./modals/AddUserModal";
-import { store } from "@/redux/store";
+// import { store } from "@/redux/store";
 import DeleteUserModal from "./modals/DeleteUserModal";
 
 
@@ -38,12 +38,13 @@ export default function Users() {
   
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
-  console.log(users);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [showDeletModal, setShowDeletModal] = useState(false);
 
+
+  // modal handlers 
   function handleModalOpen() {
     setShowModal(true);
   }
@@ -58,12 +59,6 @@ export default function Users() {
     setShowDeletModal(false);
   }
 
- 
-
-  // useEffect(()=>{
-  //   setUsers([...users, ...newUsers]);
-  // }, [newUsers]);
-
 
   // fetching users data from server
   const fetchData = async () => {
@@ -71,7 +66,7 @@ export default function Users() {
       const response = await axios.get(USERS_LIST_URL + page, {
         headers: { Authorization: `${token}` },
       });
-      console.log(...response.data.data);
+      console.log(response);
 
       const data = await response?.data;
       return data;
