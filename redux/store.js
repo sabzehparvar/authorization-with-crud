@@ -3,20 +3,35 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authSlice from './features/authSlice';
 import hardSet from 'redux-persist/es/stateReconciler/hardSet';
+import usersSlice from './features/usersSlice';
+import { combineReducers } from'redux';
 
 
 
 // Configure Redux Persist
-const persistConfig = {
-  key: 'root',
+const authPersistConfig = {
+  key: 'auth',
   storage,
   stateReconciler: hardSet,
 };
-const persistedReducer = persistReducer(persistConfig, authSlice);
+
+const usersPersistConfig = {
+  key: 'list',
+  storage,
+  stateReconciler: hardSet,
+};
+
+// const persistedReducer = persistReducer(authPersistConfig, authSlice);
+
+
+const rootReducer = combineReducers({
+  authPersistReducer: persistReducer(authPersistConfig, authSlice),
+  usersPersistReducer: persistReducer(usersPersistConfig, usersSlice),
+});
 
 // Create the Redux store
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
