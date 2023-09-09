@@ -2,8 +2,9 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 
 function Navbar() {
-  const token = useSelector((state)=>state?.user?.auth?.token)
-  const email = useSelector((state)=> state?.user?.email)
+  const token = useSelector(state => state?.authPersistReducer?.user?.auth?.token)
+  const email = useSelector(state => state?.authPersistReducer?.user?.email)
+
   const name = email?.split("@")[0]
   
   return (
