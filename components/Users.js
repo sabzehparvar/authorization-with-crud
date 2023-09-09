@@ -23,8 +23,9 @@ import {
 import { headers } from "next/dist/client/components/headers";
 import { useSelector } from "react-redux";
 import { stringify } from "postcss";
-import AddUserModal from "./AddUserModal";
+import AddUserModal from "./modals/AddUserModal";
 import { store } from "@/redux/store";
+import DeleteUserModal from "./modals/DeleteUserModal";
 
 
 const TABLE_HEAD = ["Member", "Id", "Status", "Employed", ""];
@@ -41,13 +42,20 @@ export default function Users() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [showDeletModal, setShowDeletModal] = useState(false);
 
   function handleModalOpen() {
     setShowModal(true);
   }
-
+  function handleDeleteModalOpen() {
+    setShowDeletModal(true);
+  }
   function handleModalClose() {
     setShowModal(false);
+  }
+
+  function handleDeleteModalClose() {
+    setShowDeletModal(false);
   }
 
   const newUsers = useSelector((state) => state?.usersPersistReducer.users);
@@ -115,7 +123,7 @@ export default function Users() {
             </Typography>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            <Button variant="outlined" size="sm">
+            <Button onClick={handleDeleteModalOpen} variant="outlined" size="sm">
               Delete
             </Button>
             <Button
@@ -276,6 +284,9 @@ export default function Users() {
     <AddUserModal showModal={showModal}
     handleModalClose ={handleModalClose}
     handleModalConfirm = {handleModalConfirm} />
+    <DeleteUserModal showDeletModal={showDeletModal}
+    handleDeleteModalClose ={handleDeleteModalClose}
+     />
     </>
   );
 }
