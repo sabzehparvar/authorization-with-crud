@@ -1,16 +1,29 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { avatar } from "@material-tailwind/react";
+import axios from "@/api/axios";
+import { Add } from "@/redux/features/usersSlice";
+
+const ADD_USER_URL = "api/users";
 
 export default function AddUserModal({ handleModalClose, showModal }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [first_name , setFirst_name] = useState('')
-  const [last_name , setLast_name] = useState('')
+  const dispatch = useDispatch()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [first_name, setFirst_name] = useState("");
+  const [last_name, setLast_name] = useState("");
+  // const [newUser, setNewUser] = useState();
 
-  const usersList = useSelector((state)=> state)
-  console.log(usersList);
+  const clearInput = ()=>{
+    setEmail('')
+    setPassword('')
+    setFirst_name('')
+    setLast_name('')
+  }
+  const usersList = useSelector((state) => state);
+  
   // const [open, setOpen] = useState(false)
   const onCancel = () => {
     handleModalClose();
@@ -19,7 +32,37 @@ export default function AddUserModal({ handleModalClose, showModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(first_name, last_name,email, password );
+
+    try {
+      const response = await axios.post(ADD_USER_URL, {
+        first_name,
+        last_name,
+        email,
+        password,
+      });
+      
+      console.log(response);
+      if(response.status === 201 && response){
+        dispatch(Add(response?.data))
+        onCancel()
+        clearInput()
+        console.log('done');
+      }
+      
+      
+      
+    } catch (error) {
+      console.log(error);
+    }
+
+    
+    // useEffect(() => {
+    //   addUser().then((response) => {
+    //     console.log(response);
+    //     response ? setUsers(...users, data) : "";
+    //   });
+    // }, []);
+
     // try {
     //   const response = await axios.post(LOGIN_URL, {
     //     email,
@@ -37,6 +80,13 @@ export default function AddUserModal({ handleModalClose, showModal }) {
     //   alert("Error: " + err.message);
     // }
   };
+
+  console.log(useSelector(state => state))
+
+  // adding new users
+  // const addUser = async () => {
+
+  // };
 
   return (
     <Transition.Root show={showModal} as={Fragment}>
@@ -148,28 +198,26 @@ export default function AddUserModal({ handleModalClose, showModal }) {
                               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
                             />
                           </div>
-
+                          <div className=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                            <button
+                              type="submit"
+                              className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              type="button"
+                              className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                              onClick={() => onCancel()}
+                              ref={cancelButtonRef}
+                            >
+                              Cancel
+                            </button>
+                          </div>
                         </form>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                  <button
-                    type="submit"
-                    className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
-                    onClick={handleSubmit}
-                  >
-                    Confirm
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    onClick={() => onCancel()}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
