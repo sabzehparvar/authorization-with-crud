@@ -1,37 +1,48 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
-import { avatar } from "@material-tailwind/react";
+import { Tooltip, avatar } from "@material-tailwind/react";
 import axios from "@/api/axios";
 import { Add } from "@/redux/features/usersSlice";
 
 const ADD_USER_URL = "api/users";
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
-export default function AddUserModal({ handleModalClose, showModal, handleModalConfirm }) {
-  const dispatch = useDispatch()
+
+export default function AddUserModal({
+  handleModalClose,
+  showModal,
+  handleModalConfirm,
+}) {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [validPwd, setValidPwd] = useState(false);
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
   // const [newUser, setNewUser] = useState();
 
-  const clearInput = ()=>{
-    setEmail('')
-    setPassword('')
-    setFirst_name('')
-    setLast_name('')
-  }
+  useEffect(() => {
+    setValidPwd(PWD_REGEX.test(password));
+  }, [password]);
+
+  const clearInput = () => {
+    setEmail("");
+    setValidPwd("");
+    setFirst_name("");
+    setLast_name("");
+  };
   const usersList = useSelector((state) => state);
-  
+
   // const [open, setOpen] = useState(false)
   const onCancel = () => {
     handleModalClose();
   };
 
   const onConfirm = () => {
-    handleModalConfirm()
-  }
+    handleModalConfirm();
+  };
 
   const cancelButtonRef = useRef(null);
 
@@ -43,24 +54,20 @@ export default function AddUserModal({ handleModalClose, showModal, handleModalC
         first_name,
         last_name,
         email,
-        password,
+        validPwd,
       });
-      
+
       console.log(response);
-      if(response.status === 201 && response){
-        dispatch(Add(response?.data))
-        onConfirm()
-        clearInput()
-        console.log('done');
+      if (response.status === 201 && response) {
+        dispatch(Add(response?.data));
+        onConfirm();
+        clearInput();
+        console.log("done");
       }
-      
-      
-      
     } catch (error) {
       console.log(error);
     }
 
-    
     // useEffect(() => {
     //   addUser().then((response) => {
     //     console.log(response);
@@ -193,7 +200,16 @@ export default function AddUserModal({ handleModalClose, showModal, handleModalC
                               className="block text-sm font-semibold text-gray-800"
                             >
                               Password
+                              <br />
+                              <p>
+                                {validPwd
+                                  ? ""
+                                  : "( please enter a valid password. 8 to 24 characters. Must include uppercase and lowercase letters, a number and a special character.)"}
+                              </p>
                             </label>
+                            {/* <Tooltip> 8 to 24 characters.<br />
+                            Must include uppercase and lowercase letters, a number and a special character.<br />
+                            Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span></Tooltip> */}
                             <input
                               id="password"
                               required={true}
@@ -205,8 +221,9 @@ export default function AddUserModal({ handleModalClose, showModal, handleModalC
                           </div>
                           <div className=" px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                             <button
+                              disabled={validPwd ? false : true}
                               type="submit"
-                              className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto"
+                              className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:ml-3 sm:w-auto disabled:bg-gray-600"
                             >
                               Confirm
                             </button>
